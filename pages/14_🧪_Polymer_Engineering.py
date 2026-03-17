@@ -13,6 +13,19 @@ st.title("🧪 Polymer Engineering")
 
 ctrl = PolymerController()
 
+def _default(key, fn):
+    if key not in st.session_state:
+        try:
+            r = fn(); st.session_state[key] = r if isinstance(r, tuple) else (r.get("message",""), r)
+        except Exception: pass
+
+_default("res_t1", lambda: ctrl.run_mw_stats([1,2,4,3,1],[10000,20000,30000,40000,50000]))
+_default("res_t2", lambda: ctrl.run_flory_huggins(0.5,100))
+_default("res_t3", lambda: ctrl.run_mark_houwink(1.1e-4,0.78,1000.0,1000000.0,None))
+_default("res_t4", lambda: ctrl.run_glass_transition([{"name":"PS","Tg":100.0,"w":0.6},{"name":"PMMA","Tg":105.0,"w":0.4}]))
+_default("res_t5", lambda: ctrl.run_wlf(60.0,0.0,17.44,51.6))
+_default("res_t6", lambda: ctrl.run_free_radical(500.0,1e7,1e-5,0.5,0.01,8.7,3600.0))
+
 tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
     "MW Statistics", "Flory-Huggins", "Mark-Houwink",
     "Glass Transition", "WLF Equation", "Free-Radical Kinetics"

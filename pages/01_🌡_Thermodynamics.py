@@ -13,6 +13,21 @@ st.title("🌡 Thermodynamics")
 
 ctrl = ThermoController()
 
+def _default(key, fn):
+    if key not in st.session_state:
+        try:
+            r = fn(); st.session_state[key] = r if isinstance(r, tuple) else (r.get("message",""), r)
+        except Exception: pass
+
+_default("res_t1", lambda: (ctrl.evaluate_ideal_gas(298.15,"K",101325.0,"Pa",24.5,"L",1.0).get("message",""), ctrl.generate_ideal_gas_pressure_curve(24.5,"L",1.0,200.0,600.0,"K","Pa")))
+_default("res_t2", lambda: (ctrl.calculate_antoine_pressure(8.07131,1730.63,233.426,100.0,"C","mmHg").get("message",""), ctrl.generate_antoine_curve(8.07131,1730.63,233.426,25.0,150.0,"C","mmHg")))
+_default("res_t3", lambda: ("T-x-y curve generated.", ctrl.generate_txy_curve(8.07131,1730.63,233.426,7.96681,1668.21,228.0,760.0,"mmHg","C")))
+_default("res_t4", lambda: (ctrl.calculate_eos_state("Peng-Robinson",400.0,50.0,"bar",304.2,73.8,"bar",0.228).get("message",""), ctrl.generate_eos_z_curve("Peng-Robinson",400.0,304.2,73.8,"bar",0.228,1.0,200.0,"bar")))
+_default("res_t5", lambda: ctrl.run_enthalpy_entropy(28.98,0.00157,0.0,0.0,298.0,1000.0))
+_default("res_t6", lambda: ctrl.run_activity_vle("Margules",1.5,0.8,150.0,75.0,333.15))
+_default("res_t7", lambda: ctrl.run_psychrometrics(25.0,18.0))
+_default("res_t8", lambda: ctrl.run_adiabatic_flame(-890.0,25.0,38.0,3.0))
+
 tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8 = st.tabs([
     "Ideal Gas", "Vapor Pressure", "VLE / Bubble-Dew",
     "EOS / Real Gas", "Enthalpy & Entropy", "Activity Coeff.",

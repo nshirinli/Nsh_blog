@@ -13,6 +13,18 @@ st.title("🦺 Safety & Risk")
 
 ctrl = SafetyController()
 
+def _default(key, fn):
+    if key not in st.session_state:
+        try:
+            r = fn(); st.session_state[key] = r if isinstance(r, tuple) else (r.get("message",""), r)
+        except Exception: pass
+
+_default("res_t1", lambda: ctrl.run_dispersion(1.0,3.0,10.0,"D",2000.0))
+_default("res_t2", lambda: ctrl.run_explosion(1000.0,46000.0,0.03,500.0))
+_default("res_t3", lambda: ctrl.run_pool_fire(10.0,0.05,46000.0,0.2,200.0))
+_default("res_t5", lambda: ctrl.run_lopa("Initiating event",1.0,[{"name":"BPCS","pfd":0.1},{"name":"SIS","pfd":0.01}],1e-4))
+_default("res_t6", lambda: ctrl.run_flammability(["CH4","C3H8"],[0.7,0.3],[0.05,0.021],[0.15,0.095],111.7))
+
 tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
     "Toxic Dispersion", "Vapor Cloud Explosion", "Pool Fire",
     "Risk Matrix", "LOPA", "Flammability Limits"

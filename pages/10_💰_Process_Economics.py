@@ -15,6 +15,19 @@ if "econ_ctrl" not in st.session_state:
     st.session_state.econ_ctrl = ProcessEconomicsController()
 ctrl = st.session_state.econ_ctrl
 
+def _default(key, fn):
+    if key not in st.session_state:
+        try:
+            r = fn(); st.session_state[key] = r if isinstance(r, tuple) else (r.get("message",""), r)
+        except Exception: pass
+
+_default("res_t2", lambda: ctrl.run_capex_bare_module(600.0,0.15,0.10))
+_default("res_t3", lambda: ctrl.run_capex_lang(500000.0,"fluid",0.15))
+_default("res_t4", lambda: ctrl.run_opex(1000000.0,200000.0,10,60000.0,0.06,0.01,0.01,0.1))
+_default("res_t5", lambda: ctrl.run_cash_flow(2000000.0,15,0.21,"straight-line",0.05))
+_default("res_t6", lambda: ctrl.run_profitability(0.10,2000000.0,15,0.21))
+_default("res_t7", lambda: ctrl.run_sensitivity(0.10,0.10))
+
 tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs([
     "Equipment Cost", "CAPEX (Bare Module)", "CAPEX (Lang)",
     "OPEX", "Cash Flow", "Profitability", "Sensitivity"

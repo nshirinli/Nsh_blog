@@ -13,6 +13,19 @@ st.title("🔬 Separation")
 
 ctrl = SeparationController()
 
+def _default(key, fn):
+    if key not in st.session_state:
+        try:
+            r = fn(); st.session_state[key] = r if isinstance(r, tuple) else (r.get("message",""), r)
+        except Exception: pass
+
+_default("res_t1", lambda: ctrl.run_mccabe_thiele(2.5,1.5,0.95,0.05,0.5,1.0))
+_default("res_t2", lambda: ctrl.run_kremser(1.4,0.5,0.02,0.001,0.0))
+_default("res_t3", lambda: ctrl.run_flash("0.3, 0.4, 0.3","5.0, 1.0, 0.2",None))
+_default("res_t4", lambda: ctrl.run_extraction(0.3,2.0,1.0,5,"Countercurrent"))
+_default("res_t5", lambda: ctrl.run_adsorption("Langmuir",10.0,{"KL":0.5}))
+_default("res_t6", lambda: ctrl.run_membrane(50.0,5.0,1.0,10.0,1.0,0.4))
+
 tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
     "McCabe-Thiele", "Kremser", "Flash Calculation",
     "Extraction", "Adsorption", "Membrane"

@@ -13,6 +13,19 @@ st.title("💧 Fluid Dynamics")
 
 ctrl = FluidDynamicsController()
 
+def _default(key, fn):
+    if key not in st.session_state:
+        try:
+            r = fn(); st.session_state[key] = r if isinstance(r, tuple) else (r.get("message",""), r)
+        except Exception: pass
+
+_default("res_t1", lambda: ctrl.run_pipe_flow(1000.0,1.0,0.05,0.001,100.0,0.0))
+_default("res_t2", lambda: ctrl.run_bernoulli(200000.0,1.0,5.0,100000.0,2.0,0.0,1000.0))
+_default("res_t3", lambda: ctrl.run_orifice(0.61,0.025,10000.0,1000.0))
+_default("res_t4", lambda: ctrl.run_pump_sizing(0.01,1000.0,20.0,0.75,30.0,0.015,18.0,5.0,50000.0))
+_default("res_t5", lambda: ctrl.run_isentropic(2.0,1.4))
+_default("res_t6", lambda: ctrl.run_normal_shock(2.5,1.4))
+
 tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
     "Pipe Flow / Moody", "Bernoulli", "Orifice Meter",
     "Pump Sizing", "Isentropic Flow", "Normal Shock"

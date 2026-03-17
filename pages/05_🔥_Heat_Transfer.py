@@ -13,6 +13,22 @@ st.title("🔥 Heat Transfer")
 
 ctrl = HeatTransferController()
 
+def _default(key, fn):
+    if key not in st.session_state:
+        try:
+            r = fn(); st.session_state[key] = r if isinstance(r, tuple) else (r.get("message",""), r)
+        except Exception: pass
+
+_default("res_t1", lambda: ctrl.run_flat_wall(50.0,1.0,100.0,25.0,0.01))
+_default("res_t2", lambda: ctrl.run_composite_wall([{"k":50.0,"L":0.01,"name":"Steel"},{"k":0.04,"L":0.1,"name":"Insulation"}],1.0,300.0,25.0))
+_default("res_t3", lambda: ctrl.run_cylinder(50.0,1.0,0.05,0.1,200.0,25.0))
+_default("res_t4", lambda: ctrl.run_newton_cooling(25.0,0.5,80.0,20.0))
+_default("res_t5", lambda: ctrl.run_pipe_convection(10000.0,7.0,0.6,0.05,"Dittus-Boelter",True))
+_default("res_t6", lambda: ctrl.run_lmtd(120.0,60.0,20.0,80.0,500.0,10.0,"Counter"))
+_default("res_t7", lambda: ctrl.run_ntu(2000.0,3000.0,500.0,10.0,120.0,20.0,"counter"))
+_default("res_t8a", lambda: ctrl.run_blackbody(1000.0,1.0))
+_default("res_t8b", lambda: ctrl.run_grey_body(800.0,300.0,0.8,1.0,1.0))
+
 tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8 = st.tabs([
     "Flat Wall", "Composite Wall", "Cylinder", "Newton Cooling",
     "Pipe Convection", "LMTD Heat Exchanger", "NTU Method", "Radiation"

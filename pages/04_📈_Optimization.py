@@ -13,6 +13,15 @@ st.title("📈 Optimization")
 
 ctrl = OptimizationController()
 
+def _default(key, fn):
+    if key not in st.session_state:
+        try:
+            r = fn(); st.session_state[key] = r if isinstance(r, tuple) else (r.get("message",""), r)
+        except Exception: pass
+
+_default("res_t1", lambda: ctrl.solve_problem("LP","minimize",2,"x0 + 2*x1","x0 + x1 <= 4\n2*x0 + x1 <= 6","0, 10\n0, 10","","1.0, 1.0","","","",20,"","","","","","",""))
+_default("res_t2", lambda: ctrl.solve_problem("NLP","minimize",2,"x0**2 + x1**2 - 2*x0","x0 + x1 <= 4\nx0**2 + x1**2 <= 10","0, 10\n0, 10","","1.0, 1.0","","","",20,"","","","","","",""))
+
 tab1, tab2, tab3, tab4 = st.tabs([
     "Linear (LP)", "Nonlinear (NLP)", "Mixed-Integer (MILP)", "Dynamic Control"
 ])

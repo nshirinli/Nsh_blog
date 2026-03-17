@@ -13,6 +13,18 @@ st.title("🧬 Bioprocess Engineering")
 
 ctrl = BioprocessController()
 
+def _default(key, fn):
+    if key not in st.session_state:
+        try:
+            r = fn(); st.session_state[key] = r if isinstance(r, tuple) else (r.get("message",""), r)
+        except Exception: pass
+
+_default("res_t1", lambda: ctrl.run_growth_kinetics(0.9,0.2,"monod",0.5,10.0))
+_default("res_t2", lambda: ctrl.run_batch(10.0,0.1,0.0,0.5,0.2,0.5,0.3,0.02,20.0))
+_default("res_t3", lambda: ctrl.run_chemostat(10.0,0.9,0.2,0.5,0.3,0.3))
+_default("res_t4", lambda: ctrl.run_oxygen_transfer(0.05,8.0,2.0,1000.0))
+_default("res_t5", lambda: ctrl.run_sterilization(121.0,2.5,10.0,1e12,0.001,30.0))
+
 tab1, tab2, tab3, tab4, tab5 = st.tabs([
     "Growth Kinetics", "Batch Bioreactor", "Chemostat",
     "Oxygen Transfer", "Thermal Sterilization"

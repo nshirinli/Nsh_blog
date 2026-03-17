@@ -13,6 +13,18 @@ st.title("⚡ Electrochemistry")
 
 ctrl = ElectrochemController()
 
+def _default(key, fn):
+    if key not in st.session_state:
+        try:
+            r = fn(); st.session_state[key] = r if isinstance(r, tuple) else (r.get("message",""), r)
+        except Exception: pass
+
+_default("res_t1", lambda: ctrl.run_nernst(1.23,2,1.0,25.0))
+_default("res_t2", lambda: ctrl.run_butler_volmer(1e-3,0.5,25.0,0.5))
+_default("res_t3", lambda: ctrl.run_faraday(10.0,1.0,63.5,2,0.95))
+_default("res_t4", lambda: ctrl.run_fuel_cell(80.0,1.5,1e-4,0.1,0.4,1.4))
+_default("res_t5", lambda: ctrl.run_corrosion(1e-2,55.85,2,7.87,0.01))
+
 tab1, tab2, tab3, tab4, tab5 = st.tabs([
     "Nernst Equation", "Butler-Volmer", "Faraday Electrolysis",
     "Fuel Cell", "Corrosion"

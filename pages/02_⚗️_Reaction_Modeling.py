@@ -13,6 +13,20 @@ st.title("⚗️ Reaction Modeling")
 
 ctrl = ReactionController()
 
+def _default(key, fn):
+    if key not in st.session_state:
+        try:
+            r = fn(); st.session_state[key] = r if isinstance(r, tuple) else (r.get("message",""), r)
+        except Exception: pass
+
+_default("res_t1", lambda: ctrl.run_ideal_reactor("Batch",1.0,0.5,1.0,10.0,1.0))
+_default("res_t2", lambda: ctrl.run_arrhenius(1e8,50000.0,300.0,200.0,600.0))
+_default("res_t3", lambda: ctrl.run_series_parallel("series",0.5,0.2,1.0,10.0,0.0,0.0))
+_default("res_t4", lambda: ctrl.run_reactor_sizing(0.5,1.0,1.0,1.0,0.9))
+_default("res_t5", lambda: ctrl.run_equilibrium(-92.4,-33.3,[1.0,3.0],[2.0],[1.0,3.0,0.0],1.0,298.0,200.0,800.0))
+_default("res_t6", lambda: ctrl.run_nonisothermal("Batch",1e6,50.0,1.0,1.0,25.0,1.0,-50.0,4184.0,55.5,0.0,25.0,20.0))
+_default("res_t7", lambda: ctrl.run_rtd("CSTR",5.0,5.0,25.0))
+
 tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs([
     "Ideal Reactors", "Arrhenius", "Series/Parallel",
     "Reactor Sizing", "Equilibrium", "Non-Isothermal", "RTD Analysis"

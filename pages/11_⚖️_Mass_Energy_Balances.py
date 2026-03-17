@@ -13,6 +13,18 @@ st.title("⚖️ Mass & Energy Balances")
 
 ctrl = MassEnergyController()
 
+def _default(key, fn):
+    if key not in st.session_state:
+        try:
+            r = fn(); st.session_state[key] = r if isinstance(r, tuple) else (r.get("message",""), r)
+        except Exception: pass
+
+_default("res_t1", lambda: ctrl.run_stream(298.15,101325.0,100.0,["A","B","C"],[0.33,0.34,0.33],[28,32,44]))
+_default("res_t2", lambda: ctrl.run_mixer(100.0,350.0,4.18,50.0,300.0,2.1))
+_default("res_t3", lambda: ctrl.run_splitter(100.0,[0.4,0.6],["A","B"],[0.7,0.3]))
+_default("res_t4", lambda: ctrl.run_material_balance(100.0,[0.4,0.3,0.3],["A","B","C"],0,[-1.0,-1.0,2.0],0.85))
+_default("res_t6", lambda: ctrl.run_recycle(100.0,0.95,0.1))
+
 tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs([
     "Stream Properties", "Adiabatic Mixer", "Splitter",
     "Material Balance", "Energy Balance", "Recycle Loop", "Composition Converter"

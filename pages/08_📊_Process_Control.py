@@ -13,6 +13,20 @@ st.title("📊 Process Control")
 
 ctrl = ProcessControlController()
 
+def _default(key, fn):
+    if key not in st.session_state:
+        try:
+            r = fn(); st.session_state[key] = r if isinstance(r, tuple) else (r.get("message",""), r)
+        except Exception: pass
+
+_default("res_t1", lambda: ctrl.run_fopdt_step(2.0,5.0,1.0,1.0,None))
+_default("res_t2", lambda: ctrl.run_fopdt_ramp(2.0,5.0,1.0,0.5,None))
+_default("res_t3", lambda: ctrl.run_second_order(1.0,2.0,0.5,1.0,None))
+_default("res_t4", lambda: ctrl.run_pid_simulation(2.0,5.0,1.0,2.0,5.0,0.0,1.0,0.0,None,None))
+_default("res_t5", lambda: ctrl.run_tuning_open_loop(2.0,5.0,1.0))
+_default("res_t6", lambda: ctrl.run_tuning_closed_loop(5.0,8.0))
+_default("res_t7", lambda: ctrl.run_bode_process(2.0,5.0,1.0))
+
 tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs([
     "FOPDT Step", "FOPDT Ramp", "Second Order",
     "PID Simulation", "Open-Loop Tuning", "Closed-Loop Tuning", "Bode Plot"
